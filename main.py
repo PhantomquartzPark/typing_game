@@ -24,7 +24,7 @@ class TypingGame:
         self.__init_exam()
 
     def __init_exam(self):
-        index = random.randrange(0, len(self.text_list))
+        index = random.randrange(1, len(self.text_list))
         self.ans = self.text_list[index][0]
         self.text = self.text_list[index][1]
         #self.ans = "pneumonoultramicroscopicsilicovolcanoconiosis"
