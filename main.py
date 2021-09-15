@@ -20,6 +20,7 @@ class TypingGame:
 
         self.delay_ans = args.delay
         self.replace_space = args.replace_space
+        self.mode = args.mode
         self.n_typo = 0
 
         with open(args.csv, "r", encoding="utf-8") as f:
@@ -27,11 +28,17 @@ class TypingGame:
             self.text_list = [row for row in reader]
         #print(self.text_list)
 
+        self.exam_indicies = []
         self.__init_exam()
         self.start_game = time.perf_counter()
 
     def __init_exam(self):
-        index = random.randrange(1, len(self.text_list))
+        if self.mode == "s": # s; sample
+            if len(self.exam_indicies) == 0:
+                self.exam_indicies = random.sample(range(1, len(self.text_list)), len(self.text_list)-1)
+            index = self.exam_indicies.pop(0)
+        elif self.mode == "c": # c; choices (random.choices() cannot use in python3.5)
+            index = random.randrange(1, len(self.text_list))
         #print(index) # check
         self.ans  = str.lower(self.text_list[index][0]).replace(" ", self.replace_space)
         self.text = self.text_list[index][1] if (len(self.text_list[index]) > 1) else ""
@@ -110,6 +117,7 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--csv", default="./csv/sample.csv")
     parser.add_argument("-d", "--delay", type=int, default=0)
     parser.add_argument("-r", "--replace_space", choices=[" ", "_"], default=" ")
+    parser.add_argument("-m", "--mode", choices=["s", "c"], default="s")
     args = parser.parse_args()
 
     game = TypingGame(args)
