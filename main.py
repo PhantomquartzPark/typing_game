@@ -6,7 +6,7 @@ import random
 import pygame
 
 from settings import Settings
-from utils import isloweralnum
+from utils import isavailable
 
 class TypingGame:
     def __init__(self, args):
@@ -19,6 +19,7 @@ class TypingGame:
         self.screen.fill(self.settings.bg_color)
 
         self.delay_ans = args.delay
+        self.trans = args.trans
         self.replace_space = args.replace_space
         self.mode = args.mode
         self.n_typo = 0
@@ -39,10 +40,16 @@ class TypingGame:
             index = self.exam_indicies.pop(0)
         elif self.mode == "c": # c; choices (random.choices() cannot use in python3.5)
             index = random.randrange(1, len(self.text_list))
-        #print(index) # check
-        self.ans  = str.lower(self.text_list[index][0]).replace(" ", self.replace_space)
+        
+        self.ans = self.text_list[index][0]
+        if self.trans == "u":
+            self.ans  = str.upper(self.ans)
+        elif self.trans == "l":
+            self.ans  = str.lower(self.ans)
+        self.ans = self.ans.replace(" ", self.replace_space)
+        self.ans = "".join([c if isavailable(c) else "" for c in self.ans])
+
         self.text = self.text_list[index][1] if (len(self.text_list[index]) > 1) else ""
-        #self.ans = "pneumonoultramicroscopicsilicovolcanoconiosis"
         self.n_word = 0
         self.strbuf = ""
         self.start_exam = time.perf_counter()
@@ -58,17 +65,15 @@ class TypingGame:
             self.__update_screen()
 
     def __check_keydown_events(self, event):
-        keyname = pygame.key.name(event.key)
-        keyname = self.replace_space if (keyname == "space") else keyname
-        if (len(self.strbuf) < self.settings.maxwordlen) \
-        and (len(keyname) == 1) \
-        and (isloweralnum(keyname) or (keyname == self.replace_space)):
-            #print(keyname) # check
-            if (len(self.ans) > self.n_word) and self.ans[self.n_word] == keyname:
-                self.strbuf += keyname
+        keycode = event.unicode
+        keycode = self.replace_space if (keycode == " ") else keycode
+        if (len(keycode) == 1) and isavailable(keycode[0]):
+            if keycode == self.ans[self.n_word]:
+                self.strbuf += keycode
                 self.n_word += 1
             else:
                 self.n_typo += 1
+            
             if (len(self.ans) <= self.n_word):
                 self.__init_exam()
 
@@ -117,6 +122,7 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--csv", default="./csv/sample.csv")
     parser.add_argument("-d", "--delay", type=int, default=0)
     parser.add_argument("-r", "--replace_space", choices=[" ", "_"], default=" ")
+    parser.add_argument("-t", "--trans", choices=["l", "u"])
     parser.add_argument("-m", "--mode", choices=["s", "c"], default="s")
     args = parser.parse_args()
 
