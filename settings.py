@@ -1,6 +1,5 @@
 class Settings:
     def __init__(self):
-        self.csv_file_path = "./textdata/sample.csv"
         self.font_path = "./font/ipaexg00401/ipaexg.ttf"
 
         scale = 150*2
