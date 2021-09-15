@@ -9,7 +9,7 @@ from settings import Settings
 from utils import isloweralnum
 
 class TypingGame:
-    def __init__(self, delay_ans, csv_file_path):
+    def __init__(self, args):
         pygame.init()
 
         self.settings = Settings()
@@ -18,10 +18,11 @@ class TypingGame:
         self.font = pygame.font.Font(self.settings.font_path, self.settings.fontsize)
         self.screen.fill(self.settings.bg_color)
 
-        self.delay_ans = delay_ans
+        self.delay_ans = args.delay
+        self.replace_space = args.replace_space
         self.n_typo = 0
 
-        with open(csv_file_path, "r", encoding="utf-8") as f:
+        with open(args.csv, "r", encoding="utf-8") as f:
             reader = csv.reader(f)
             self.text_list = [row for row in reader]
         #print(self.text_list)
@@ -32,7 +33,7 @@ class TypingGame:
     def __init_exam(self):
         index = random.randrange(1, len(self.text_list))
         #print(index) # check
-        self.ans  = str.lower(self.text_list[index][0])
+        self.ans  = str.lower(self.text_list[index][0]).replace(" ", self.replace_space)
         self.text = self.text_list[index][1] if (len(self.text_list[index]) > 1) else ""
         #self.ans = "pneumonoultramicroscopicsilicovolcanoconiosis"
         self.n_word = 0
@@ -51,10 +52,12 @@ class TypingGame:
 
     def __check_keydown_events(self, event):
         keyname = pygame.key.name(event.key)
+        keyname = self.replace_space if (keyname == "space") else keyname
         if (len(self.strbuf) < self.settings.maxwordlen) \
-        and (len(keyname) == 1) and isloweralnum(keyname):
+        and (len(keyname) == 1) \
+        and (isloweralnum(keyname) or (keyname == self.replace_space)):
             #print(keyname) # check
-            if (len(self.ans) > self.n_word) and (self.ans[self.n_word] == keyname):
+            if (len(self.ans) > self.n_word) and self.ans[self.n_word] == keyname:
                 self.strbuf += keyname
                 self.n_word += 1
             else:
@@ -106,7 +109,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--csv", default="./csv/sample.csv")
     parser.add_argument("-d", "--delay", type=int, default=0)
+    parser.add_argument("-r", "--replace_space", choices=[" ", "_"], default=" ")
     args = parser.parse_args()
 
-    game = TypingGame(args.delay, args.csv)
+    game = TypingGame(args)
     game.run()
