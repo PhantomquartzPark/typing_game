@@ -67,7 +67,7 @@ class TypingGame:
     def __check_keydown_events(self, event):
         keycode = event.unicode
         keycode = self.replace_space if (keycode == " ") else keycode
-        if (len(keycode) == 1) and isavailable(keycode[0]):
+        if (len(keycode) == 1) and isavailable(keycode):
             if keycode == self.ans[self.n_word]:
                 self.strbuf += keycode
                 self.n_word += 1

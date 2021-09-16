@@ -12,12 +12,12 @@ if args.path is None:
 else:
     file_path = args.path
 
+mydict = dict()
 if not os.path.exists(file_path):
     print("create {}".format(file_path))
     f = open(file_path, "w")
     f.close()
 else:
-    mydict = dict()
     with open(file_path, "r", encoding="utf-8") as f:
         reader = csv.reader(f)
         for i, row in enumerate(reader):

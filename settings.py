@@ -2,7 +2,7 @@ class Settings:
     def __init__(self):
         self.font_path = "./font/ipaexg00401/ipaexg.ttf"
 
-        scale = 150*2
+        scale = 120*2
         self.screen_width  = 4*scale
         self.screen_height = 3*scale
 
