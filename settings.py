@@ -9,5 +9,6 @@ class Settings:
         self.bg_color = (10, 10, 20)
         self.ft_color = (200, 200, 200)
 
-        self.fontsize = 60
+        self.main_fontsize = 60
+        self.sub_fontsize = 45
         self.maxwordlen = 45

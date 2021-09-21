@@ -4,6 +4,7 @@ font/*
 csv/*
 !sapmle.csv
 !sample2.csv
+!sample3.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
