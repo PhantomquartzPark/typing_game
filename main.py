@@ -19,7 +19,8 @@ class TypingGame:
         self.sub_font = pygame.font.Font(self.settings.font_path, self.settings.sub_fontsize)
         self.screen.fill(self.settings.bg_color)
 
-        self.delay_ans = args.delay
+        self.delay_ans = abs(args.delay)
+        self.delay_opt = 1 if (args.delay < 0) else 0
         self.trans = args.trans
         self.replace_space = args.replace_space
         self.mode = args.mode
@@ -85,9 +86,11 @@ class TypingGame:
         self.__draw_font_tr(self.main_font, "Typo: {}".format(self.n_typo), (0, 0))
 
         offset = 25
+        sec_per_char = 0.1
+        
         self.__draw_font_ct(self.sub_font, self.subtext, (0, -225+offset))
         self.__draw_font_ct(self.sub_font, self.text, (0, -150+offset))
-        if (time.perf_counter() - self.start_exam) >= self.delay_ans:
+        if (time.perf_counter() - self.start_exam) >= (self.delay_opt*sec_per_char*len(self.ans) + self.delay_ans):
             self.__draw_font_ct(self.main_font, self.ans[self.n_word:], (0, -75+offset))
         self.__draw_font_ct(self.main_font, self.strbuf, (0, 0+offset))
 
