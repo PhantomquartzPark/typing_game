@@ -25,6 +25,7 @@ class TypingGame:
         self.replace_space = args.replace_space
         self.mode = args.mode
         self.n_typo = 0
+        self.exam_count = 0
 
         with open(args.csv, "r", encoding="utf-8") as f:
             reader = csv.reader(f)
@@ -54,6 +55,7 @@ class TypingGame:
         self.subtext = "" if (len(self.text_list[index]) <= 2) else self.text_list[index][2]
         self.n_word = 0
         self.strbuf = ""
+        self.exam_count += 1
         self.start_exam = time.perf_counter()
 
     def run(self):
@@ -82,7 +84,8 @@ class TypingGame:
 
     def __update_screen(self):
         self.screen.fill(self.settings.bg_color)
-        self.__draw_font_tl(self.main_font, "Time: {:.0f}".format(time.perf_counter()-self.start_game), (0, 0))
+        self.__draw_font_tl(self.sub_font, "Time: {:.0f}".format(time.perf_counter()-self.start_game), (0, 0))
+        self.__draw_font_tl(self.sub_font, "Question: {}".format(self.exam_count), (0, 50))
         self.__draw_font_tr(self.main_font, "Typo: {}".format(self.n_typo), (0, 0))
 
         offset = 25
