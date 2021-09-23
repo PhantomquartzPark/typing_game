@@ -27,9 +27,11 @@ class TypingGame:
         self.n_typo = 0
         self.exam_count = 0
 
-        with open(args.csv, "r", encoding="utf-8") as f:
-            reader = csv.reader(f)
-            self.text_list = [row for row in reader]
+        self.text_list = []
+        for filename in args.csv:
+            with open(filename, "r", encoding="utf-8") as f:
+                reader = csv.reader(f)
+                self.text_list += [row for row in reader]
         #print(self.text_list)
 
         self.exam_indicies = []
@@ -129,7 +131,7 @@ class TypingGame:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--csv", default="./csv/sample.csv")
+    parser.add_argument("-c", "--csv", nargs="+", default=["./csv/sample.csv"])
     parser.add_argument("-d", "--delay", type=int, default=0)
     parser.add_argument("-r", "--replace_space", choices=[" ", "_"], default=" ")
     parser.add_argument("-t", "--trans", choices=["l", "u"])
